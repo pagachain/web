@@ -50,3 +50,4 @@ section:nth-of-type(even) .card{background:var(--bg)}
 footer{background:var(--navy);color:#b9c2d6;padding:28px 0;font-size:.9rem;text-align:center}
 footer a{color:var(--gold2)}
 [data-en]{}
+.hero p.slogan{color:var(--gold2);font-size:clamp(1.3rem,3.2vw,1.9rem);font-weight:700;margin:0 auto 30px}
