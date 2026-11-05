@@ -77,7 +77,7 @@
   <div class="wrap">
     <h2 data-en="What is Paga">Qué es Paga</h2>
     <div class="grid">
-      <div class="card"><div class="icon">📱</div><h3 data-en="In your wallet">En tu cartera</h3><p data-en="Pay and get paid in a few taps.">Paga y cobra con unos toques.</p></div>
+      <div class="card"><div class="icon">📱</div><h3 data-en="In your wallet">En tu cartera</h3><p data-en="Pay and get paid in a few taps.">Paga y cobra con unos toques.</p><p><button type="button" class="btn ghost" id="add-wallet" data-en="Add PAGA to your wallet">Añadir PAGA a tu cartera</button></p></div>
       <div class="card"><div class="icon">🔑</div><h3 data-en="Yours">Tuyo</h3><video class="card-video" controls playsinline preload="metadata" poster="assets/paga-envio.jpg" width="448" height="672" aria-label="Video: envío de 10 PAGA / Video: sending 10 PAGA"><source src="assets/paga-envio.mp4" type="video/mp4"></video><p data-en="Only you control your PAGA.">Solo tú controlas tus PAGA.</p></div>
       <div class="card"><div class="icon">🪙</div><h3 data-en="1 PAGA = 0.10 USD">1 PAGA = 0,10 USD</h3><p data-en="Stable launch value.">Valor estable de lanzamiento.</p></div>
     </div>
@@ -124,5 +124,27 @@
     <p>© 2026 PagaChain · <span data-en="Project in development · Testnet">Proyecto en desarrollo · Testnet</span> · <a href="#aviso-legal" data-en="Legal notice">Aviso legal</a></p>
   </div>
 </footer>
+
+<script>
+// Botón "Añadir PAGA a tu cartera": configura la red y el token en MetaMask y compatibles.
+// Datos de la red Paga (L2 propia). Rellenar RPC y dirección del token cuando estén desplegados.
+const PAGA_RED = {
+  chainId: '0x11ab1', // 72369
+  chainName: 'Paga',
+  nativeCurrency: { name: 'PAGA', symbol: 'PAGA', decimals: 18 },
+  rpcUrls: [''], // TODO: RPC público de la red Paga
+  blockExplorerUrls: []
+};
+const PAGA_TOKEN = ''; // TODO: dirección del contrato del token PAGA
+document.getElementById('add-wallet').addEventListener('click', async () => {
+  if (!window.ethereum) { alert('Instala MetaMask u otra cartera compatible / Install MetaMask or a compatible wallet.'); return; }
+  try {
+    await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [PAGA_RED] });
+    if (PAGA_TOKEN) {
+      await window.ethereum.request({ method: 'wallet_watchAsset', params: { type: 'ERC20', options: { address: PAGA_TOKEN, symbol: 'PAGA', decimals: 18 } } });
+    }
+  } catch (e) { console.log(e); }
+});
+</script>
 </body>
 </html>
