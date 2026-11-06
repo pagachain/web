@@ -136,15 +136,35 @@ const PAGA_RED = {
   blockExplorerUrls: []
 };
 const PAGA_TOKEN = ''; // TODO: dirección del contrato del token PAGA
-document.getElementById('add-wallet').addEventListener('click', async () => {
-  if (!window.ethereum) { alert('Instala MetaMask u otra cartera compatible / Install MetaMask or a compatible wallet.'); return; }
+const esIngles = () => document.documentElement.lang === 'en';
+const msg = (es, en) => alert(esIngles() ? en : es);
+async function anadirPaga() {
+  if (!window.ethereum) {
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // En el móvil: abre la web dentro de MetaMask, que repite el paso solo
+      location.href = 'https://metamask.app.link/dapp/' + location.host + location.pathname + '?cartera=1';
+    } else {
+      msg('Instala MetaMask u otra cartera compatible en tu navegador y vuelve a pulsar el botón.', 'Install MetaMask or a compatible wallet in your browser and tap the button again.');
+      window.open('https://metamask.io/download/', '_blank');
+    }
+    return;
+  }
+  if (!PAGA_RED.rpcUrls[0]) {
+    msg('La red Paga se abre muy pronto. Vuelve en unos días.', 'The Paga network opens very soon. Come back in a few days.');
+    return;
+  }
   try {
     await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [PAGA_RED] });
     if (PAGA_TOKEN) {
       await window.ethereum.request({ method: 'wallet_watchAsset', params: { type: 'ERC20', options: { address: PAGA_TOKEN, symbol: 'PAGA', decimals: 18 } } });
     }
+    msg('¡Listo! Paga ya está en tu cartera.', 'Done! Paga is now in your wallet.');
   } catch (e) { console.log(e); }
-});
+}
+document.getElementById('add-wallet').addEventListener('click', anadirPaga);
+if (new URLSearchParams(location.search).get('cartera') === '1' && window.ethereum) {
+  window.addEventListener('load', () => setTimeout(anadirPaga, 600));
+}
 </script>
 </body>
 </html>
